@@ -1,4 +1,0 @@
-baseURL = 'https://steffandavies.github.io/theblackbox/'
-languageCode = 'en-us'
-title = 'The Black Box'
-theme = 'hugo-theme-stack'
