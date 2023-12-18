@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>python on The Black Box</title><link>https://steffandavies.github.io/theblackbox/categories/python/</link><description>Recent content in python on The Black Box</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 18 Dec 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://steffandavies.github.io/theblackbox/categories/python/index.xml" rel="self" type="application/rss+xml"/><item><title>Library Review: pytube</title><link>https://steffandavies.github.io/theblackbox/p/library-review-pytube/</link><pubDate>Mon, 18 Dec 2023 00:00:00 +0000</pubDate><guid>https://steffandavies.github.io/theblackbox/p/library-review-pytube/</guid><description>&lt;img src="https://steffandavies.github.io/theblackbox/p/library-review-pytube/cover.jpg" alt="Featured image of post Library Review: pytube" />&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>The &lt;a class="link" href="https://github.com/pytube/pytube" target="_blank" rel="noopener"
+>pytube&lt;/a> library for Python3 is a popular toolbox for accessing YouTube content. One of it&amp;rsquo;s main quirks is that it does not rely on any third-party dependencies, while providing a number of simple tools for querying and downloading videos, audio-tracks and captions.&lt;/p>
+&lt;p>While pytube has proven to be a useful library for many people (as of writing it has over 2k forks and 9.7k stars on GitHub), some recent changes at YouTube have left it largely broken.&lt;/p>
+&lt;p>To make things worse, the project seems to be all but &lt;a class="link" href="https://github.com/pytube/pytube/issues/1786" target="_blank" rel="noopener"
+>abandoned&lt;/a> by it&amp;rsquo;s maintainers, despite still having an active (and desperate) community sharing their frustrations in the Issues tab of the repository, and providing each other with &lt;a class="link" href="https://github.com/pytube/pytube/issues/1626#issuecomment-1670435112" target="_blank" rel="noopener"
+>workarounds&lt;/a>. The &lt;a class="link" href="https://pytube.io/en/latest/" target="_blank" rel="noopener"
+>documentation&lt;/a> is also &lt;a class="link" href="https://github.com/pytube/pytube/pull/1361" target="_blank" rel="noopener"
+>outdated&lt;/a>, asking the user to use deprecated functions in the tutorial.&lt;/p>
+&lt;p>Due to the growing discontent with the repositories&amp;rsquo; stagnation, part of the community forked the repo to create &lt;a class="link" href="https://github.com/JuanBindez/pytubefix" target="_blank" rel="noopener"
+>pytubefix&lt;/a>, which solves a number of issues. Perhaps the maintainers of pytubefix expect their fork to eventually be merged back into the original pytube repo, but I&amp;rsquo;m skeptical this will happen soon.&lt;/p>
+&lt;p>For this reason, the examples listed in the article will use the pytubefix library as it is identical to pytube.&lt;/p>
+&lt;h2 id="instalation">Instalation&lt;/h2>
+&lt;p>To start, we will be using a clean conda environment and install Python 3.12 and Jupyter Lab as our coding environment.&lt;/p>
+&lt;p>Conda is a popular package management solution for Python as it allows the user to easily create independent environments containing their own packages, avoiding conflicts between project dependencies. A guide for installing on Linux can be found &lt;a class="link" href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/p>
+&lt;p>Once we have installed conda, we can create a new environment and install Jupyter Lab from the conda-forge channel. We will then add our python kernel from this conda environment to Jupyter.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">conda create -n pytube
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">conda activate pytube
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">conda install -c conda-forge jupyterlab
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ipython kernel install --user --name&lt;span class="o">=&lt;/span>pytube
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Jupyter Lab is part of Project Jupyter and allows for the creation of interactive coding projects. Now that is installed we will create a folder for our project and launch Jupyter Lab:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">mkdir pytube
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> pytube
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">jupyter lab
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Now you should have a Jupyter Server running and your default browser should open in the corresponding localhost address. If not, check your console output for the link.&lt;/p>
+&lt;p>In the Jupyter interface launcher tab, under the Notebook section, click on &lt;em>pytube&lt;/em> to launch a new Jupyter Notebook.&lt;/p>
+&lt;h2 id="install-and-import-libraries">Install and import libraries&lt;/h2>
+&lt;p>Now that we have our Jupyter Notebook running, we should install pytube and import all our libraries for the project. Let&amp;rsquo;s start by installing pytubefix.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">import&lt;/span> &lt;span class="nn">sys&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">!&lt;/span>&lt;span class="p">{&lt;/span>&lt;span class="n">sys&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">executable&lt;/span>&lt;span class="p">}&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">m&lt;/span> &lt;span class="n">pip&lt;/span> &lt;span class="n">install&lt;/span> &lt;span class="n">pytubefix&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Notice how we use the &lt;code>!&lt;/code> before running our command. This instructs IPython to run a shell command instead of python code. &lt;code>{sys.executable}&lt;/code> is our Python 3.12 kernel from the pytube conda environment. Installing directly to a &lt;code>python&lt;/code> or &lt;code>python3&lt;/code> keyword runs the risk of summoning our base python kernel instead, which we don&amp;rsquo;t want.&lt;/p>
+&lt;p>Let&amp;rsquo;s go ahead and import the libraries:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="kn">from&lt;/span> &lt;span class="nn">pytubefix&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">YouTube&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Playlist&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Channel&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Search&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kn">from&lt;/span> &lt;span class="nn">IPython.display&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">Image&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Video&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Audio&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>In case you are wondering, the &lt;code>IPython.display&lt;/code> module provides &lt;code>Image&lt;/code> and &lt;code>Video&lt;/code> classes for visualizing each of these types of media within our Jupyter Notebook.&lt;/p>
+&lt;h2 id="thumbnails">Thumbnails&lt;/h2>
+&lt;p>Retrieving video thumbnails is easy in pytube. We start by instantiating a YouTube object using the video URL. This object will contain a number of properties such as the video title:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">yt&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">YouTube&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;http://youtube.com/watch?v=2lAe1cqCOXo&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">yt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">title&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The thumbnail can be presented using a single line of code, by leveraging the Ipython image class. Here we pass the thumbnail URL of the YouTube object and set an acceptable width:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">Image&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">url&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">yt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">thumbnail_url&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">width&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">512&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="videos">Videos&lt;/h2>
+&lt;h3 id="obtaining-video-info">Obtaining video info&lt;/h3>
+&lt;p>We can work with a video by instantiating a &lt;code>Youtube&lt;/code> object while passing the video url. Here we will instantiate the object and access it&amp;rsquo;s properties:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">video&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">YouTube&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;http://youtube.com/watch?v=2lAe1cqCOXo&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">title&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">title&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">views&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">views&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">url&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">watch_url&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">title&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2"> - &lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">watch_url&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2"> (&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">views&lt;/span>&lt;span class="si">:&lt;/span>&lt;span class="s2">,&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2"> views)&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;Author:&lt;/span>&lt;span class="se">\t&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">author&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;Date:&lt;/span>&lt;span class="se">\t&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">publish_date&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s2">Description:&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">description&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="gathering-streams">Gathering streams&lt;/h3>
+&lt;p>When downloading, you have to choose between &lt;abbr title="Dynamic Adaptive Streaming over HTTP">DASH&lt;/abbr> (adaptive) and Progressive content streams for video, and an audio-only stream.&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>DASH&lt;/strong>: Highest quality. However, audio and video are separate and must be joined using &lt;abbr title="Fast Forward Moving Picture Experts Group">&lt;a class="link" href="https://ffmpeg.org/" target="_blank" rel="noopener"
+>FFmpeg&lt;/a>&lt;/abbr> or another tool.&lt;/li>
+&lt;li>&lt;strong>Progressive&lt;/strong>: Not as high quality. This is the &amp;ldquo;old&amp;rdquo; way of Youtube providing content. Audio and Video are together in the same file.&lt;/li>
+&lt;/ul>
+&lt;p>To make things simple, we will use the progressive stream as an example:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">adaptive_streams&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">streams&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">filter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">adaptive&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">True&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">progressive_streams&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">streams&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">filter&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">progressive&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">True&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;Adaptive streams (DASH):&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">stream&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">adaptive_streams&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">stream&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="se">\n\n&lt;/span>&lt;span class="s2">Progressive streams:&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">stream&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">progressive_streams&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">stream&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>In this case, there is a 360p and a 720p progressive stream available. We can obtain some metadata from the 360p stream properties:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">stream&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">streams&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get_by_itag&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">18&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;Title:&lt;/span>&lt;span class="se">\t\t&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">stream&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">title&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;Filename:&lt;/span>&lt;span class="se">\t&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">stream&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">default_filename&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;Bitrate:&lt;/span>&lt;span class="se">\t&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">stream&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">bitrate&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;Filesize:&lt;/span>&lt;span class="se">\t&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">stream&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">filesize_mb&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2"> MB&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="downloading-a-video">Downloading a video&lt;/h3>
+&lt;p>Let&amp;rsquo;s download the 360p version:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">stream&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">download&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">output_path&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;./downloads/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">filename&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;360p.mp4&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">filename_prefix&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;test_&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>One of the reasons why working in Jupyter is so great, at least for prototyping, is because we can view our work immediately:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">Video&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;./downloads/test_360p.mp4&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">width&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">512&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="retrieving-captions">Retrieving Captions&lt;/h2>
+&lt;h3 id="downloading-captions">Downloading Captions&lt;/h3>
+&lt;p>Grabbing the media captions is just as easy. All we have to do is filter the &lt;code>captions&lt;/code> property of our Youtbe object by language code (it&amp;rsquo;s a dictionary-like object), and then call then use the &lt;code>save_captions&lt;/code> function to write the result to a file (note that they are in .srt style).&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">captions&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;en&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">save_captions&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;captions_en.srt&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="listing-all-languages">Listing All Languages&lt;/h3>
+&lt;p>If you are not interested in English captions, you can list the available languages by using the &lt;code>caption_tracks&lt;/code> property:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">caption_tracks&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="playlists">Playlists&lt;/h2>
+&lt;h3 id="getting-playlist-data">Getting Playlist Data&lt;/h3>
+&lt;p>It&amp;rsquo;s also possible to retrieve Playlists and their contents using pytube. Let&amp;rsquo;s go ahead and see some of the information we can print out:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">playlist&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Playlist&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;https://www.youtube.com/playlist?list=PLzH6n4zXuckoUWpzSEpQNW6I8rXIzyi8w&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>&lt;span class="s2">Playlist title:&lt;/span>&lt;span class="se">\t\t&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">playlist&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">title&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="se">\n\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>&lt;span class="s2">View count:&lt;/span>&lt;span class="se">\t\t&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">playlist&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">views&lt;/span>&lt;span class="si">:&lt;/span>&lt;span class="s2">,&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="se">\n\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>&lt;span class="s2">Playlist owner:&lt;/span>&lt;span class="se">\t\t&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">playlist&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">owner&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="se">\n\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>&lt;span class="s2">Video count:&lt;/span>&lt;span class="se">\t\t&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">playlist&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">length&lt;/span>&lt;span class="si">:&lt;/span>&lt;span class="s2">,&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="se">\n\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">\n&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">playlist&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">description&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="se">\n\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>Playlist title: Pong, Python &amp;amp; Pygame&lt;/p>
+&lt;p>View count: 29,058&lt;/p>
+&lt;p>Playlist owner: Computerphile&lt;/p>
+&lt;p>Video count: 4&lt;/p>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;p>Squash-Pong created in python by Dr Isaac Triguero&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="listing-playlist-videos">Listing Playlist Videos&lt;/h3>
+&lt;p>As we can see, useful information is stored in the Playlist object&amp;rsquo;s properties. From here, we can create separate lists of all the videos, titles and URLs and zip them up into a tuple:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">titles&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">title&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">video&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">playlist&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">videos&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">views&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">views&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">video&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">playlist&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">videos&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">urls&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">playlist&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">video_urls&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">videos&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">list&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nb">zip&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">titles&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">urls&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">views&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">video&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">videos&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">video&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2"> - &lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">video&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2"> (&lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">video&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="si">:&lt;/span>&lt;span class="s2">,&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2"> views)&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;blockquote>
+&lt;p>Pong, Python &amp;amp; Pygame 00 - Computerphile - &lt;a class="link" href="https://www.youtube.com/watch?v=JRLdbt7vK-E" target="_blank" rel="noopener"
+>https://www.youtube.com/watch?v=JRLdbt7vK-E&lt;/a> (89,593 views)&lt;/p>
+&lt;p>Pong, Python &amp;amp; PyGame 01 - Computerphile - &lt;a class="link" href="https://www.youtube.com/watch?v=hHtb-Ohyfu8" target="_blank" rel="noopener"
+>https://www.youtube.com/watch?v=hHtb-Ohyfu8&lt;/a> (60,029 views)&lt;/p>
+&lt;p>Pong, Python &amp;amp; Pygame 10 - Computerphile - &lt;a class="link" href="https://www.youtube.com/watch?v=Nk3Och0I4ZY" target="_blank" rel="noopener"
+>https://www.youtube.com/watch?v=Nk3Och0I4ZY&lt;/a> (37,610 views)&lt;/p>
+&lt;p>Pong, Python &amp;amp; PyGame 11 - Computerphile - &lt;a class="link" href="https://www.youtube.com/watch?v=VyrAVNoEf0g" target="_blank" rel="noopener"
+>https://www.youtube.com/watch?v=VyrAVNoEf0g&lt;/a> (36,951 views)&lt;/p>
+&lt;p>— &lt;cite>Output&lt;/cite>&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="downloading-video-playlists">Downloading Video playlists&lt;/h3>
+&lt;p>Finally, we can download the playlist contents using the &lt;code>download&lt;/code> function. In this case, we will retrieve the video streams with the highest quality possible:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">video&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">playlist&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">videos&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">streams&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get_highest_resolution&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">download&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">output_path&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;./downloads/&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="downloading-audio">Downloading Audio&lt;/h3>
+&lt;p>If we are only interested in the audio, we can fetch the audio track separately:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">video&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">playlist&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">videos&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">streams&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get_audio_only&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">download&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">mp3&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="kc">True&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">output_path&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;./downloads/&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Now let&amp;rsquo;s listen:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">Audio&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;downloads/Pong, Python &amp;amp; Pygame 00 - Computerphile.mp3&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="channels">Channels&lt;/h2>
+&lt;h3 id="listing-content">Listing Content&lt;/h3>
+&lt;p>If we are looking for more than just a playlist, and need all the content from a channel, this is also possible:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">channel&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Channel&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;https://www.youtube.com/@Computerphile/&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">channel&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">channel_name&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Considering this is a large channel, let&amp;rsquo;s list the names of the first 5 videos in 2021:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="k">for&lt;/span> &lt;span class="n">vid&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">channel&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">videos&lt;/span>&lt;span class="p">[:&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">]:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">vid&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">title&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="filtering">Filtering&lt;/h3>
+&lt;p>We could even filter videos of a channel based on, for example, the day, month or year they were published, as pytube provides &lt;code>datetime&lt;/code> properties for the videos. Note that sequentially iterating all the videos of a channel is an extremely slow process.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl">&lt;span class="n">videos&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">video&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">video&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">channel&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">videos&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">publish_date&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">year&lt;/span>&lt;span class="o">==&lt;/span>&lt;span class="mi">2022&lt;/span> &lt;span class="k">if&lt;/span> &lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">publish_date&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">month&lt;/span>&lt;span class="o">==&lt;/span>&lt;span class="mi">11&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">titles&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="n">video&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">title&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">video&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">videos&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="searching">Searching&lt;/h2>
+&lt;h3 id="searching-youtube">Searching YouTube&lt;/h3>
+&lt;p>Pytube also contains a search functionality.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl"> &lt;span class="n">search&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Search&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;Harvard CS50&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="sa">f&lt;/span>&lt;span class="s2">&amp;#34;&amp;#34;&amp;#34;Results for &lt;/span>&lt;span class="si">{&lt;/span>&lt;span class="n">search&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">query&lt;/span>&lt;span class="si">}&lt;/span>&lt;span class="s2"> query:&lt;/span>&lt;span class="se">\n&lt;/span>&lt;span class="s2">&amp;#34;&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">search&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">results&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">result&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">title&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>The search results are limited to avoid infinite loops. We can get more results using the &lt;code>get_next_results&lt;/code> function, which will append more results to the &lt;code>results&lt;/code> property.&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl"> &lt;span class="n">search&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get_next_results&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">for&lt;/span> &lt;span class="n">result&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">search&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">results&lt;/span>&lt;span class="p">():&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nb">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">result&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">title&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="completion-suggestions">Completion suggestions&lt;/h3>
+&lt;p>Search completion suggestions can also be obtained using the &lt;code>completion_suggestions&lt;/code> property:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="line">&lt;span class="cl"> &lt;span class="n">search&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">completion_suggestions&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="conclusion">Conclusion&lt;/h2>
+&lt;p>Pytube is a cute little library for searching and downloading YouTube content. It&amp;rsquo;s incredibly simple and easy to use. However, it&amp;rsquo;s current state is almost &lt;strong>unusable&lt;/strong> due to internal changes at YouTube breaking the code. In the meantime, pytubefix is recommended until issues are resolved.&lt;/p></description></item></channel></rss>
